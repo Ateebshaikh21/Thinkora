@@ -1,0 +1,155 @@
+╔══════════════════════════════════════════════════════════════╗
+║          THINKORA DEPLOYMENT CHECKLIST                       ║
+║          Follow this step-by-step                            ║
+╚══════════════════════════════════════════════════════════════╝
+
+📋 PRE-DEPLOYMENT
+═══════════════════════════════════════════════════════════════
+[ ] Save logo files:
+    - frontend/public/thinkora-logo.png
+    - frontend/public/favicon.png
+
+[ ] Create accounts:
+    - GitHub account (https://github.com)
+    - Vercel account (https://vercel.com)
+    - Render account (https://render.com)
+
+═══════════════════════════════════════════════════════════════
+🔧 STEP 1: PUSH TO GITHUB
+═══════════════════════════════════════════════════════════════
+[ ] Open terminal in project folder
+
+[ ] Run these commands:
+    git init
+    git add .
+    git commit -m "Initial commit - Thinkora"
+
+[ ] Create repository on GitHub:
+    - Go to https://github.com/new
+    - Name: thinkora
+    - Click "Create repository"
+
+[ ] Push code:
+    git remote add origin https://github.com/YOUR_USERNAME/thinkora.git
+    git branch -M main
+    git push -u origin main
+
+[ ] Verify code is on GitHub
+
+═══════════════════════════════════════════════════════════════
+🖥️ STEP 2: DEPLOY BACKEND (RENDER)
+═══════════════════════════════════════════════════════════════
+[ ] Go to https://render.com
+
+[ ] Sign in with GitHub
+
+[ ] Click "New +" → "Web Service"
+
+[ ] Connect your thinkora repository
+
+[ ] Configure:
+    Name: thinkora-backend
+    Runtime: Python 3
+    Build Command: cd backend && pip install -r requirements.txt
+    Start Command: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    Plan: Free
+
+[ ] Add environment variables:
+    ENVIRONMENT = production
+    PYTHON_VERSION = 3.11.0
+
+[ ] Click "Create Web Service"
+
+[ ] Wait for deployment (3-5 minutes)
+
+[ ] COPY YOUR BACKEND URL: _________________________________
+
+═══════════════════════════════════════════════════════════════
+🌐 STEP 3: DEPLOY FRONTEND (VERCEL)
+═══════════════════════════════════════════════════════════════
+[ ] Go to https://vercel.com
+
+[ ] Sign in with GitHub
+
+[ ] Click "Add New..." → "Project"
+
+[ ] Import your thinkora repository
+
+[ ] Configure:
+    Framework: Vite
+    Root Directory: frontend
+    Build Command: npm run build
+    Output Directory: dist
+
+[ ] Add environment variable:
+    VITE_API_URL = [YOUR_RENDER_URL]/api
+    (Example: https://thinkora-backend.onrender.com/api)
+
+[ ] Click "Deploy"
+
+[ ] Wait for deployment (2-3 minutes)
+
+[ ] COPY YOUR FRONTEND URL: _________________________________
+
+═══════════════════════════════════════════════════════════════
+🔗 STEP 4: UPDATE CORS
+═══════════════════════════════════════════════════════════════
+[ ] Go back to Render dashboard
+
+[ ] Click on thinkora-backend service
+
+[ ] Click "Environment" tab
+
+[ ] Add environment variable:
+    CORS_ORIGINS = [YOUR_VERCEL_URL]
+    (Example: https://thinkora-xyz.vercel.app)
+
+[ ] Click "Save Changes"
+
+[ ] Wait for redeploy (2-3 minutes)
+
+═══════════════════════════════════════════════════════════════
+✅ STEP 5: TEST YOUR APP
+═══════════════════════════════════════════════════════════════
+[ ] Open your Vercel URL in browser
+
+[ ] Test these features:
+    [ ] Home page loads
+    [ ] Create subject
+    [ ] Upload document
+    [ ] Generate questions
+    [ ] View analysis
+    [ ] Take quiz
+    [ ] View history
+    [ ] Download CSV
+
+═══════════════════════════════════════════════════════════════
+🎉 SUCCESS!
+═══════════════════════════════════════════════════════════════
+
+Your app is now live at:
+Frontend: _________________________________
+Backend:  _________________________________
+
+Share it with the world! 🚀🎓
+
+═══════════════════════════════════════════════════════════════
+📝 NOTES
+═══════════════════════════════════════════════════════════════
+- First backend request may take 30 seconds (cold start)
+- Subsequent requests will be fast
+- Auto-deploys on git push
+- Free tier: 750 hours/month on Render
+- Unlimited bandwidth on Vercel
+
+═══════════════════════════════════════════════════════════════
+🆘 TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════
+CORS Error → Check CORS_ORIGINS matches Vercel URL exactly
+API Error → Check VITE_API_URL ends with /api
+Slow → Normal on first request (Render free tier)
+Build Failed → Check logs in dashboard
+
+═══════════════════════════════════════════════════════════════
+
+For detailed help, see: DEPLOY_NOW.md

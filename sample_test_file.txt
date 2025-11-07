@@ -1,0 +1,26 @@
+Sample Study Material - Computer Science
+
+1. What is the definition of an algorithm?
+2. How do you implement a binary search tree?
+3. Explain the concept of object-oriented programming.
+4. What are the principles of database normalization?
+5. Define the term "Big O notation".
+6. How does garbage collection work in programming languages?
+7. What is the difference between stack and queue data structures?
+8. Explain the concept of recursion with an example.
+9. What are the advantages of using version control systems?
+10. How do you optimize database queries for better performance?
+
+Important Topics:
+- Data Structures and Algorithms
+- Object-Oriented Programming
+- Database Management Systems
+- Software Engineering Principles
+- Computer Networks
+- Operating Systems
+
+Exam Tips:
+- Focus on understanding concepts rather than memorizing
+- Practice coding problems regularly
+- Review previous year questions
+- Create mind maps for complex topics
