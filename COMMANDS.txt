@@ -1,0 +1,43 @@
+═══════════════════════════════════════════════════════════
+  THINKORA DEPLOYMENT - COPY & PASTE COMMANDS
+═══════════════════════════════════════════════════════════
+
+📋 STEP 1: PUSH TO GITHUB
+───────────────────────────────────────────────────────────
+
+First, create repo at: https://github.com/new
+Name: thinkora
+
+Then run these commands (REPLACE YOUR_USERNAME):
+
+& "C:\Program Files\Git\cmd\git.exe" remote add origin https://github.com/YOUR_USERNAME/thinkora.git
+
+& "C:\Program Files\Git\cmd\git.exe" branch -M main
+
+& "C:\Program Files\Git\cmd\git.exe" push -u origin main
+
+Need token? https://github.com/settings/tokens
+(Use token as password when pushing)
+
+═══════════════════════════════════════════════════════════
+
+🔧 IF YOU GET ERRORS:
+───────────────────────────────────────────────────────────
+
+Remote already exists:
+& "C:\Program Files\Git\cmd\git.exe" remote remove origin
+
+Then try adding remote again.
+
+═══════════════════════════════════════════════════════════
+
+✅ AFTER GITHUB PUSH:
+───────────────────────────────────────────────────────────
+
+1. Deploy backend to Render.com
+2. Deploy frontend to Vercel.com
+3. Connect them with CORS
+
+See START_HERE.md for full instructions!
+
+═══════════════════════════════════════════════════════════
