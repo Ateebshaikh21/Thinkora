@@ -69,7 +69,13 @@ const Quiz = () => {
   const startQuiz = async () => {
     const questions = await generateQuizQuestions();
     if (questions.length > 0) {
-      setQuizQuestions(questions);
+      // Ensure each question has a unique ID
+      const questionsWithUniqueIds = questions.map((q, idx) => ({
+        ...q,
+        uniqueId: `q-${idx}-${Date.now()}`, // Create truly unique ID
+        originalId: q.id,
+      }));
+      setQuizQuestions(questionsWithUniqueIds);
       setQuizStarted(true);
       setCurrentQuestionIndex(0);
       setAnswers({});
@@ -77,11 +83,19 @@ const Quiz = () => {
     }
   };
 
-  const handleAnswerSelect = (questionId, answerIndex) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: answerIndex,
-    }));
+  const handleAnswerSelect = (questionUniqueId, answerIndex) => {
+    setAnswers((prev) => {
+      const newAnswers = {
+        ...prev,
+        [questionUniqueId]: answerIndex,
+      };
+      console.log(
+        `✅ Selected answer for question ${questionUniqueId}:`,
+        answerIndex
+      );
+      console.log("📊 All answers:", newAnswers);
+      return newAnswers;
+    });
   };
 
   const nextQuestion = () => {
@@ -100,10 +114,19 @@ const Quiz = () => {
     try {
       const timeTaken = 1800 - timeLeft; // Calculate actual time taken
 
+      // Convert answers back to original question IDs for backend
+      const backendAnswers = {};
+      Object.keys(answers).forEach((uniqueId) => {
+        const question = quizQuestions.find((q) => q.uniqueId === uniqueId);
+        if (question) {
+          backendAnswers[question.originalId] = answers[uniqueId];
+        }
+      });
+
       const quizData = {
         session_id: sessionId,
         user_id: "demo_user",
-        answers: answers,
+        answers: backendAnswers,
         questions: quizQuestions,
         time_taken: timeTaken,
       };
@@ -300,31 +323,36 @@ const Quiz = () => {
         </div>
 
         <div className="space-y-3">
-          {currentQuestion.options.map((option, index) => (
-            <label
-              key={index}
-              className={`flex items-center p-3 border rounded-lg cursor-pointer transition-colors ${
-                answers[currentQuestion.id] === index
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
-              }`}
-            >
-              <input
-                type="radio"
-                name={`question-${currentQuestion.id}`}
-                value={index}
-                checked={answers[currentQuestion.id] === index}
-                onChange={() => handleAnswerSelect(currentQuestion.id, index)}
-                className="mr-3"
-              />
-              <span className="flex-1">{option}</span>
-            </label>
-          ))}
+          {currentQuestion.options.map((option, index) => {
+            const isSelected = answers[currentQuestion.uniqueId] === index;
+            return (
+              <label
+                key={`${currentQuestion.uniqueId}-option-${index}`}
+                className={`flex items-center p-3 border rounded-lg cursor-pointer transition-colors ${
+                  isSelected
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={`question-${currentQuestion.uniqueId}`}
+                  value={index}
+                  checked={isSelected}
+                  onChange={() =>
+                    handleAnswerSelect(currentQuestion.uniqueId, index)
+                  }
+                  className="mr-3"
+                />
+                <span className="flex-1">{option}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-center mb-4">
         <button
           onClick={previousQuestion}
           disabled={currentQuestionIndex === 0}
@@ -333,22 +361,29 @@ const Quiz = () => {
           ← Previous
         </button>
 
-        <div className="flex space-x-2">
-          {quizQuestions.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentQuestionIndex(index)}
-              className={`w-8 h-8 rounded text-xs font-medium ${
-                index === currentQuestionIndex
-                  ? "bg-blue-500 text-white"
-                  : answers[quizQuestions[index].id] !== undefined
-                  ? "bg-green-100 text-green-800"
-                  : "bg-gray-100 text-gray-600"
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
+        <div className="flex space-x-2 overflow-x-auto max-w-md">
+          {quizQuestions.map((question, index) => {
+            const isAnswered = answers[question.uniqueId] !== undefined;
+            const isCurrent = index === currentQuestionIndex;
+            return (
+              <button
+                key={`nav-${question.uniqueId}`}
+                onClick={() => setCurrentQuestionIndex(index)}
+                className={`w-8 h-8 rounded text-xs font-medium flex-shrink-0 ${
+                  isCurrent
+                    ? "bg-blue-500 text-white"
+                    : isAnswered
+                    ? "bg-green-100 text-green-800 border border-green-300"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+                title={`Question ${index + 1}${
+                  isAnswered ? " (Answered)" : ""
+                }`}
+              >
+                {index + 1}
+              </button>
+            );
+          })}
         </div>
 
         {currentQuestionIndex === quizQuestions.length - 1 ? (
@@ -360,6 +395,15 @@ const Quiz = () => {
             Next →
           </button>
         )}
+      </div>
+
+      {/* Answer Summary */}
+      <div className="card bg-gray-50">
+        <div className="text-sm text-gray-600">
+          <span className="font-medium">Progress:</span>{" "}
+          {Object.keys(answers).length} of {quizQuestions.length} questions
+          answered
+        </div>
       </div>
     </div>
   );
