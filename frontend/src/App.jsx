@@ -1,7 +1,14 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import Header from "./components/Header";
 import Home from "./pages/Home";
+import Login from "./pages/Login";
 import SubjectSetup from "./pages/SubjectSetup";
 import DocumentUpload from "./pages/DocumentUpload";
 import QuestionAnalysis from "./pages/QuestionAnalysis";
@@ -11,10 +18,102 @@ import QuizResult from "./pages/QuizResult";
 import NotificationSystem from "./components/NotificationSystem";
 import "./App.css";
 
-function App() {
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
+
+function AppContent() {
   const [currentSubject, setCurrentSubject] = useState(null);
   const [studySession, setStudySession] = useState(null);
 
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+      <Header />
+      <main className="container mx-auto px-4 py-8">
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/setup"
+            element={
+              <ProtectedRoute>
+                <SubjectSetup onSubjectSetup={setCurrentSubject} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/upload"
+            element={
+              <ProtectedRoute>
+                <DocumentUpload
+                  subject={currentSubject}
+                  onSessionCreated={setStudySession}
+                />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/analysis"
+            element={
+              <ProtectedRoute>
+                <QuestionAnalysis session={studySession} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/history"
+            element={
+              <ProtectedRoute>
+                <History />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz"
+            element={
+              <ProtectedRoute>
+                <Quiz />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/quiz-result"
+            element={
+              <ProtectedRoute>
+                <QuizResult />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </main>
+      <NotificationSystem />
+    </div>
+  );
+}
+
+function App() {
   return (
     <Router
       future={{
@@ -22,35 +121,9 @@ function App() {
         v7_relativeSplatPath: true,
       }}
     >
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
-        <Header />
-        <main className="container mx-auto px-4 py-8">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route
-              path="/setup"
-              element={<SubjectSetup onSubjectSetup={setCurrentSubject} />}
-            />
-            <Route
-              path="/upload"
-              element={
-                <DocumentUpload
-                  subject={currentSubject}
-                  onSessionCreated={setStudySession}
-                />
-              }
-            />
-            <Route
-              path="/analysis"
-              element={<QuestionAnalysis session={studySession} />}
-            />
-            <Route path="/history" element={<History />} />
-            <Route path="/quiz" element={<Quiz />} />
-            <Route path="/quiz-result" element={<QuizResult />} />
-          </Routes>
-        </main>
-        <NotificationSystem />
-      </div>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
     </Router>
   );
 }
