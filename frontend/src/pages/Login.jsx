@@ -5,7 +5,37 @@ import { useAuth } from "../context/AuthContext";
 const Login = () => {
   const { signInWithGoogle, error } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
+
+  const handleEmailSignIn = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      // TODO: Implement email/password authentication later
+      console.log("Email login:", email, password);
+      
+      // For now, create a mock user and store in localStorage
+      const mockUser = {
+        uid: 'temp-' + Date.now(),
+        email: email,
+        displayName: email.split('@')[0],
+        photoURL: null,
+        token: 'mock-token-' + Date.now()
+      };
+      
+      localStorage.setItem('mockUser', JSON.stringify(mockUser));
+      localStorage.setItem('authToken', mockUser.token);
+      
+      // Force page reload to trigger auth state
+      window.location.href = '/';
+    } catch (err) {
+      console.error("Login failed:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleGoogleSignIn = async () => {
     try {
@@ -55,6 +85,54 @@ const Login = () => {
                 <span>Access your study materials from anywhere</span>
               </li>
             </ul>
+          </div>
+
+          {/* Email/Password Sign In Form */}
+          <form onSubmit={handleEmailSignIn} className="space-y-4 mb-6">
+            <div>
+              <input
+                type="email"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <div>
+              <input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full gradient-bg text-white font-semibold py-3 px-6 rounded-lg hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="animate-spin w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
+                  <span>Signing in...</span>
+                </div>
+              ) : (
+                "Continue with Email"
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or</span>
+            </div>
           </div>
 
           {/* Google Sign In Button */}

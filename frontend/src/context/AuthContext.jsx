@@ -22,6 +22,18 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Check for mock user first (for email/password login)
+    const mockUser = localStorage.getItem('mockUser');
+    if (mockUser) {
+      try {
+        setUser(JSON.parse(mockUser));
+        setLoading(false);
+        return;
+      } catch (e) {
+        localStorage.removeItem('mockUser');
+      }
+    }
+
     // Listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
@@ -68,6 +80,7 @@ export const AuthProvider = ({ children }) => {
     try {
       await firebaseSignOut(auth);
       localStorage.removeItem("authToken");
+      localStorage.removeItem("mockUser");
       setUser(null);
     } catch (err) {
       console.error("Sign out error:", err);
