@@ -13,7 +13,7 @@ from database.db_connection import connect_to_mongo
 
 app = FastAPI(
     title="Thinkora API",
-    description="Smart Study Assistant Backend",
+    description="Smart Study Assistant Backend - AI-Powered Learning",
     version="1.0.0"
 )
 
