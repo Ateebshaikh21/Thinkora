@@ -18,7 +18,7 @@ app = FastAPI(
 )
 
 # CORS configuration - supports both development and production
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:5173,https://frontend-gnievugal-ateebshaikh0821-8173s-projects.vercel.app,https://frontend-nprnofldn-ateebshaikh0821-8173s-projects.vercel.app")
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000,http://localhost:3001,http://localhost:5173,https://frontend-gnievugal-ateebshaikh0821-8173s-projects.vercel.app,https://frontend-nprnofldn-ateebshaikh0821-8173s-projects.vercel.app,https://frontend-oayap1b1e-ateebshaikh0821-8173s-projects.vercel.app,https://frontend-ccbl7kahd-ateebshaikh0821-8173s-projects.vercel.app")
 allowed_origins = [origin.strip() for origin in cors_origins.split(",")]
 
 app.add_middleware(
