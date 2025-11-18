@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../config/api";
 
 const DocumentUpload = ({ subject, onSessionCreated }) => {
   const [files, setFiles] = useState([]);
@@ -77,7 +78,7 @@ const DocumentUpload = ({ subject, onSessionCreated }) => {
       });
 
       const response = await axios.post(
-        `http://localhost:8000/api/analysis/upload-documents?subject_id=${subject.subject_id}&user_id=demo_user`,
+        `${API_URL}/analysis/upload-documents?subject_id=${subject.subject_id}&user_id=demo_user`,
         formData,
         {
           headers: {

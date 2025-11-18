@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../config/api";
 
 const QuizResult = () => {
   const [searchParams] = useSearchParams();
@@ -25,7 +26,7 @@ const QuizResult = () => {
   const fetchHistory = async () => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/quiz/quiz/history/${sessionId}?user_id=demo_user`
+        `${API_URL}/quiz/quiz/history/${sessionId}?user_id=demo_user`
       );
       setHistory(response.data);
     } catch (err) {
@@ -378,7 +379,7 @@ const QuizResult = () => {
         <button
           onClick={() => {
             window.open(
-              `http://localhost:8000/api/quiz/quiz/download/${sessionId}`,
+              `${API_URL}/quiz/quiz/download/${sessionId}`,
               "_blank"
             );
           }}

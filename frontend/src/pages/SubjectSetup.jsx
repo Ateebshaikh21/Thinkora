@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../config/api";
 
 const SubjectSetup = ({ onSubjectSetup }) => {
   const [subjectName, setSubjectName] = useState("");
@@ -20,7 +21,7 @@ const SubjectSetup = ({ onSubjectSetup }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/subjects/setup",
+        `${API_URL}/subjects/setup`,
         {
           subject_name: subjectName,
           user_id: "demo_user", // In a real app, this would come from authentication

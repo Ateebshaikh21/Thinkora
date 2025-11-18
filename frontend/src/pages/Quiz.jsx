@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../config/api";
 
 const Quiz = () => {
   const [searchParams] = useSearchParams();
@@ -39,7 +40,7 @@ const Quiz = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `http://localhost:8000/api/analysis/session/${sessionId}`
+        `${API_URL}/analysis/session/${sessionId}`
       );
       setSession(response.data);
     } catch (err) {
@@ -54,7 +55,7 @@ const Quiz = () => {
     try {
       setLoading(true);
       const response = await axios.post(
-        `http://localhost:8000/api/quiz/quiz/generate/${sessionId}?question_count=20`
+        `${API_URL}/quiz/quiz/generate/${sessionId}?question_count=20`
       );
       return response.data.questions;
     } catch (err) {
@@ -132,7 +133,7 @@ const Quiz = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8000/api/quiz/quiz/submit",
+        "${API_URL}/quiz/quiz/submit",
         quizData
       );
 

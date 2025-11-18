@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import API_URL from "../config/api";
 
 const History = () => {
   const [sessions, setSessions] = useState([]);
@@ -19,7 +20,7 @@ const History = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:8000/api/analysis/sessions?user_id=demo_user"
+        `${API_URL}/analysis/sessions?user_id=demo_user`
       );
       setSessions(response.data.sessions || []);
     } catch (err) {
@@ -76,7 +77,7 @@ const History = () => {
 
     try {
       await axios.delete(
-        `http://localhost:8000/api/analysis/session/${sessionId}`
+        `${API_URL}/analysis/session/${sessionId}`
       );
       setSessions(sessions.filter((s) => s.id !== sessionId));
     } catch (err) {
@@ -93,7 +94,7 @@ const History = () => {
   const handleSaveSessionId = async (oldSessionId) => {
     try {
       const response = await axios.put(
-        `http://localhost:8000/api/analysis/session/${oldSessionId}/rename?new_id=${editSessionId}`
+        `${API_URL}/analysis/session/${oldSessionId}/rename?new_id=${editSessionId}`
       );
 
       // Create a clean display name from the new session ID

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import SimpleDiagramRenderer from "../components/SimpleDiagramRenderer";
+import API_URL from "../config/api";
 
 const QuestionAnalysis = ({ session }) => {
   const [questionSet, setQuestionSet] = useState(null);
@@ -33,7 +34,7 @@ const QuestionAnalysis = ({ session }) => {
   const fetchSessionData = async (sessionId) => {
     try {
       const response = await axios.get(
-        `http://localhost:8000/api/analysis/session/${sessionId}`
+        `${API_URL}/analysis/session/${sessionId}`
       );
       setSessionData(response.data);
     } catch (err) {
@@ -49,7 +50,7 @@ const QuestionAnalysis = ({ session }) => {
 
     try {
       const response = await axios.post(
-        `http://localhost:8000/api/analysis/generate-questions/${sessionId}`
+        `${API_URL}/analysis/generate-questions/${sessionId}`
       );
       setQuestionSet(response.data.question_set);
     } catch (err) {
@@ -63,7 +64,7 @@ const QuestionAnalysis = ({ session }) => {
   const getExplanation = async (question) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/api/explanations/generate",
+        "${API_URL}/explanations/generate",
         {
           question: question.text,
           subject: sessionData?.subject || session?.subject || "General",
