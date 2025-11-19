@@ -15,8 +15,8 @@ router = APIRouter()
 @router.post("/upload-documents")
 async def upload_documents(
     subject_id: str,
-    files: List[UploadFile] = File(...),
-    user_id: str = None
+    user_id: str,
+    files: List[UploadFile] = File(...)
 ):
     """
     Upload and analyze study documents (PYQs, notes, syllabus)
