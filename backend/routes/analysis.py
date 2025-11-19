@@ -14,15 +14,16 @@ router = APIRouter()
 
 @router.post("/upload-documents")
 async def upload_documents(
-    files: List[UploadFile] = File(...),
     subject_id: str = Query(...),
-    user_id: str = Query(...)
+    user_id: str = Query(...),
+    files: List[UploadFile] = File(...)
 ):
     """
     Upload and analyze study documents (PYQs, notes, syllabus)
     Supports: PDF, DOCX, XLSX, TXT, CSV, MD, RTF files
     """
     try:
+        logging.info(f"Upload request: subject_id={subject_id}, user_id={user_id}, files={len(files)}")
         sessions_collection = get_sessions_collection()
         nlp_analyzer = NLPAnalyzer()
         
