@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, HTTPException, UploadFile, File, Query
 from typing import List
 import logging
 from models.schemas import StudySession, UploadedDocument, QuestionSet
@@ -14,9 +14,9 @@ router = APIRouter()
 
 @router.post("/upload-documents")
 async def upload_documents(
-    subject_id: str,
-    user_id: str,
-    files: List[UploadFile] = File(...)
+    files: List[UploadFile] = File(...),
+    subject_id: str = Query(...),
+    user_id: str = Query(...)
 ):
     """
     Upload and analyze study documents (PYQs, notes, syllabus)
